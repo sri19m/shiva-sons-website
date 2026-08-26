@@ -2,7 +2,7 @@
 
 > Simple B2B tools that save time and grow your business.
 
-The official marketing website for **Shiva Sons Technologies** — a Regina, Saskatchewan SaaS company selling [ReviewFlow](#reviewflow) and [FixTrack](#fixtrack) to Canadian small businesses and landlords.
+The official marketing website for **Shiva Sons Technologies** — a Regina, Saskatchewan micro-SaaS company building focused tools for small landlords and local service businesses across Canada.
 
 🌐 **Live site:** [shivasonstech.ca](https://shivasonstech.ca) *(coming soon)*
 
@@ -10,11 +10,36 @@ The official marketing website for **Shiva Sons Technologies** — a Regina, Sas
 
 ## Products
 
-### ReviewFlow
-Automatically collect 5-star Google reviews after appointments and manage all your reviews in one inbox. Built for local clinics, salons, gyms, contractors, and auto shops.
+### 🏠 FixTrack by Shiva Sons
+Simple maintenance request tool for small landlords.
 
-### FixTrack
-Simple maintenance request tracker for small landlords and property managers. Tenants submit requests with photos, landlords manage everything from one dashboard.
+Full property-management software is built for big companies and costs $100+/month. Small landlords with 3–10 units just want something cheap and simple. FixTrack gives tenants a link to submit maintenance requests with photos, and gives landlords a clean dashboard to track everything — no more messy WhatsApp threads and spreadsheets.
+
+**Pricing**
+| Plan | Price | Units |
+|---|---|---|
+| Starter | $15/month | Up to 10 units |
+| Pro | $29/month | Up to 30 units |
+| Business | $49/month | Up to 100 units |
+
+---
+
+### ⭐ TestiFlow by Shiva Sons
+AI-powered testimonial collector for small businesses.
+
+Businesses know testimonials sell, but they rarely ask in a systematic way. TestiFlow automatically messages customers after a purchase or appointment asking for a short text or video testimonial, then gathers all the best ones in one dashboard — ready to embed on your website, landing pages, and ads.
+
+**Pricing**
+| Plan | Price | Requests/Month |
+|---|---|---|
+| Starter | $29/month | Up to 100 requests |
+| Pro | $49/month | Up to 500 requests |
+| Business | $79/month | Up to 2,000 requests |
+
+---
+
+### 🎁 Client Referral Program
+Applies to both products. Refer a friend who signs up for any paid plan → get 1 free month of your current plan. Maximum 5 referrals per year (5 free months max).
 
 ---
 
@@ -26,20 +51,33 @@ Simple maintenance request tracker for small landlords and property managers. Te
 | Styling | Tailwind CSS |
 | Components | shadcn/ui |
 | Language | TypeScript |
+| Database & Auth | Supabase (PostgreSQL) |
+| Payments | Lemon Squeezy (start) → Stripe at scale |
+| Transactional Email | Resend (100/day free) |
+| Marketing Email | Brevo (300/day free) |
+| CRM | HubSpot Free |
 | Hosting | Cloudflare Pages |
+| CI/CD | GitHub Actions |
 | Version Control | GitHub |
-| Forms | Formspree |
 | Analytics | Google Analytics 4 + Microsoft Clarity |
+| Domain | Cloudflare Registrar |
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
-
 - Node.js 18+ ([download](https://nodejs.org))
 - Git ([download](https://git-scm.com))
-- A code editor — we use VS Code
+- VS Code ([download](https://code.visualstudio.com))
+
+### VS Code Extensions
+Install these before writing a line of code:
+- **Live Server** — preview HTML/CSS instantly
+- **Prettier** — auto-format code on save
+- **ESLint** — catch JavaScript errors early
+- **Tailwind CSS IntelliSense** — autocomplete for Tailwind classes
+- **Codeium** (free) or **GitHub Copilot** — AI code completion
 
 ### Installation
 
@@ -53,11 +91,14 @@ cd shiva-sons-website
 # 3. Install dependencies
 npm install
 
-# 4. Start the development server
+# 4. Copy environment variables template
+cp .env.example .env.local
+
+# 5. Start the development server
 npm run dev
 ```
 
-Then open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
@@ -65,53 +106,113 @@ Then open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ```
 shiva-sons-website/
-├── app/                        # Next.js App Router pages
-│   ├── page.tsx                # Home
-│   ├── pricing/page.tsx        # Pricing Plans
-│   ├── services/page.tsx       # Our Services
-│   ├── about/page.tsx          # About Us
-│   ├── contact/page.tsx        # Contact Us
-│   ├── careers/page.tsx        # Careers
-│   ├── login/page.tsx          # Log In
-│   ├── signup/page.tsx         # Sign Up
-│   └── dashboard/page.tsx      # Dashboard (Coming Soon)
-├── components/                 # Shared components
-│   ├── Navbar.tsx
-│   ├── Footer.tsx
-│   ├── ProductCard.tsx
-│   ├── PricingTable.tsx
-│   └── ContactForm.tsx
-├── public/                     # Static assets
+├── app/                         # Next.js App Router pages
+│   ├── page.tsx                 # Home
+│   ├── services/page.tsx        # Our Services (FixTrack + TestiFlow)
+│   ├── pricing/page.tsx         # Pricing Plans + Referral Program
+│   ├── about/page.tsx           # About Us
+│   ├── contact/page.tsx         # Contact Us
+│   ├── careers/page.tsx         # Careers
+│   ├── login/page.tsx           # Log In
+│   ├── signup/page.tsx          # Sign Up
+│   ├── dashboard/page.tsx       # Dashboard (Coming Soon)
+│   ├── privacy/page.tsx         # Privacy Policy
+│   └── terms/page.tsx           # Terms of Service
+├── components/                  # Shared components
+│   ├── layout/
+│   │   ├── Navbar.tsx
+│   │   └── Footer.tsx
+│   ├── home/
+│   │   ├── HeroSection.tsx
+│   │   ├── ProductsSection.tsx
+│   │   ├── WhyChooseUs.tsx
+│   │   └── CtaBanner.tsx
+│   ├── pricing/
+│   │   ├── PricingTable.tsx
+│   │   └── ReferralBanner.tsx
+│   └── shared/
+│       ├── ProductCard.tsx
+│       ├── ContactForm.tsx
+│       └── SearchModal.tsx
+├── public/                      # Static assets
 │   ├── images/
+│   │   ├── hero/
+│   │   ├── products/
+│   │   └── icons/
 │   └── logo.svg
-├── tailwind.config.ts          # Brand color configuration
+├── lib/                         # Utilities and config
+│   └── utils.ts
+├── .env.example                 # Environment variable template
+├── tailwind.config.ts           # Brand color + font config
 └── README.md
 ```
 
 ---
 
-## Brand Colors
+## Brand
 
+### Colors
 | Name | Hex | Usage |
 |---|---|---|
-| Orange (Primary) | `#F97316` | Buttons, highlights, ReviewFlow |
-| Navy | `#1E3A5F` | Navbar, headings, FixTrack |
+| Orange (Primary) | `#F97316` | Buttons, highlights, CTAs |
+| Navy (Secondary) | `#1E3A5F` | Navbar, headings, FixTrack |
 | Blue | `#2563EB` | Links, accents |
 | White | `#FFFFFF` | Page backgrounds |
+| Off-white | `#F9FAFB` | Section backgrounds |
 | Text | `#1F2937` | Body copy |
 
-**Fonts:** Space Grotesk (headings) · Inter (body)
+### Typography
+- **Headlines:** Space Grotesk (700) — modern, geometric, tech feel
+- **Body:** Inter (400/500) — clean, readable
+- **Code:** JetBrains Mono
+
+### Tone
+Professional but friendly. Simple English. No corporate jargon. Canadian.
+
+---
+
+## Environment Variables
+
+Create a `.env.local` file from the template:
+
+```bash
+cp .env.example .env.local
+```
+
+```bash
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Lemon Squeezy (payments)
+LEMONSQUEEZY_API_KEY=your_api_key
+LEMONSQUEEZY_STORE_ID=your_store_id
+NEXT_PUBLIC_FIXTRACK_STARTER_LINK=your_checkout_link
+NEXT_PUBLIC_FIXTRACK_PRO_LINK=your_checkout_link
+NEXT_PUBLIC_FIXTRACK_BUSINESS_LINK=your_checkout_link
+NEXT_PUBLIC_TESTIFLOW_STARTER_LINK=your_checkout_link
+NEXT_PUBLIC_TESTIFLOW_PRO_LINK=your_checkout_link
+NEXT_PUBLIC_TESTIFLOW_BUSINESS_LINK=your_checkout_link
+
+# Resend (transactional email)
+RESEND_API_KEY=your_resend_api_key
+
+# Google Analytics
+NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+```
+
+> ⚠️ Never commit `.env.local` to GitHub. It is already in `.gitignore`.
 
 ---
 
 ## Pages Checklist
 
-- [ ] Home page
-- [ ] Pricing Plans (ReviewFlow + FixTrack)
-- [ ] Our Services
+- [ ] Home
+- [ ] Our Services (FixTrack + TestiFlow detail)
+- [ ] Pricing Plans (both products + referral program + FAQ)
 - [ ] About Us
 - [ ] Contact Us
-- [ ] Careers
+- [ ] Careers (+ resume upload form)
 - [ ] Log In
 - [ ] Sign Up
 - [ ] Dashboard (Coming Soon placeholder)
@@ -124,49 +225,39 @@ shiva-sons-website/
 
 This site deploys automatically via **Cloudflare Pages**.
 
-Every push to the `main` branch triggers a new deployment. Pull requests get a preview URL automatically.
+Every push to `main` triggers a production deployment.
+Every pull request gets an isolated preview URL.
 
-**Build settings:**
+**Build settings in Cloudflare Pages:**
 ```
-Framework:        Next.js
-Build command:    npm run build
-Output directory: .next
-Node version:     18
+Framework preset:  Next.js
+Build command:     npm run build
+Output directory:  .next
+Node version:      18
 ```
 
 ---
 
-## Environment Variables
-
-Create a `.env.local` file in the root for local development:
+## Git Workflow
 
 ```bash
-# Formspree (contact form)
-NEXT_PUBLIC_FORMSPREE_ID=your_form_id_here
+# Start a new piece of work
+git checkout -b feature/pricing-page
 
-# Google Analytics
-NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+# Save progress
+git add .
+git commit -m "Add pricing page — FixTrack + TestiFlow tiers"
+
+# Push and open a PR
+git push origin feature/pricing-page
 ```
-
-> ⚠️ Never commit `.env.local` to GitHub. It's already in `.gitignore`.
-
----
-
-## Contributing
-
-This is a private company project. If you're working on this repo:
-
-1. Create a branch for your feature: `git checkout -b feature/contact-page`
-2. Make your changes and commit: `git commit -m "Add contact page form"`
-3. Push your branch: `git push origin feature/contact-page`
-4. Open a Pull Request into `main`
 
 **Commit message format:**
 ```
-Add [thing]         → new feature or page
-Fix [thing]         → bug fix
-Update [thing]      → changes to existing content
-Remove [thing]      → deleted something
+Add [thing]      → new page, feature, or component
+Fix [thing]      → bug or visual issue
+Update [thing]   → content or copy change
+Remove [thing]   → deleted code or file
 ```
 
 ---
